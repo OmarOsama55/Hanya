@@ -53,42 +53,8 @@
             cursor: pointer;
             border-radius: 5px;
         }
-    </style>
-</head>
-<body>
-    <h1>Hanona ❤️</h1>
-    <div class="heart">💖</div>
-
-    <div class="message-container" id="messages">
-        <p class="message">3mltlk website 3shan 22olk eny b7bk 💕</p>
-        <p class="message">Hanona ahla bent fel donya w cute lma btt3sb 💖</p>
-        <p class="message">isa 3gbk ba2a 3shan application tl3 s3b delwa2ty 😂</p>
-    </div>
-
-    <input type="text" id="messageInput" placeholder="Write your message here">
-    <button onclick="updateMessage()">Send</button>
-
-    <div id="messageLabel"></div>
-
-    <script>
-        function updateMessage() {
-            const messageInput = document.getElementById("messageInput");
-            const messagesContainer = document.getElementById("messages");
-            
-            const newMessage = messageInput.value.trim();
-            if (newMessage !== "") {
-                // Create a new message element and style it like other messages
-                const newMessageElement = document.createElement("p");
-                newMessageElement.className = "message";
-                newMessageElement.textContent = newMessage;
-
-                // Append it to the messages container
-                messagesContainer.appendChild(newMessageElement);
-
-                // Clear the input field after submitting
-                messageInput.value = "";
-            }
-        }
-    </script>
-</body>
-</html>
+        #fixedLabel {
+            margin-top: 20px;
+            font-size: 20px;
+            background-color: white;
+            padding: 
