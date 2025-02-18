@@ -79,10 +79,13 @@
     <button onclick="sendMessage()">Send</button>
 
     <div id="fixedLabel" class="message">
-        <!-- This label will be updated with the new message -->
+        <!-- This label will be updated with the last saved message -->
     </div>
 
     <script>
+        const scriptURL = "https://script.google.com/macros/s/AKfycbxz0RSyqZIaKiT_k5BfHxyRBHZ-O6bHrBAD76TNNCs54RyY4IenHHyVofNw4RFJAeN9IQ/exec"; // Replace with your Google Apps Script URL
+
+        // Function to send a message to Google Sheets
         function sendMessage() {
             const messageInput = document.getElementById("messageInput");
             const fixedLabel = document.getElementById("fixedLabel");
@@ -92,8 +95,7 @@
                 // Update the label with the new message
                 fixedLabel.textContent = newMessage;
 
-                // Send the message to Google Sheets using the Apps Script API
-                const url = "https://script.google.com/macros/s/AKfycbw98ZtFjE11whYZFWxM8-dUj1SmvY7giH5kmJqUF8GnajT0klMoU5ey7CDlxWGyizT8tA/exec"; // Replace with your Google Script URL
+                // Send the message to Google Sheets
                 const params = {
                     method: "POST",
                     body: new URLSearchParams({
@@ -101,7 +103,7 @@
                     })
                 };
                 
-                fetch(url, params)
+                fetch(scriptURL, params)
                     .then(response => response.json())
                     .then(data => {
                         console.log("Message saved:", data);
@@ -114,6 +116,23 @@
                 messageInput.value = "";
             }
         }
+
+        // Function to fetch the last saved message from Google Sheets
+        function fetchLastMessage() {
+            fetch(scriptURL)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.message) {
+                        document.getElementById("fixedLabel").textContent = data.message;
+                    }
+                })
+                .catch(error => {
+                    console.error("Error fetching last message:", error);
+                });
+        }
+
+        // Load the last saved message when the page loads
+        window.onload = fetchLastMessage;
     </script>
 </body>
 </html>
