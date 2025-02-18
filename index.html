@@ -83,7 +83,7 @@
     </div>
 
     <script>
-        const scriptURL = "https://script.google.com/macros/s/AKfycbxz0RSyqZIaKiT_k5BfHxyRBHZ-O6bHrBAD76TNNCs54RyY4IenHHyVofNw4RFJAeN9IQ/exec"; // Replace with your Google Apps Script URL
+        const scriptURL = "YOUR_SCRIPT_URL_HERE"; // Replace with your actual Google Apps Script URL
 
         // Function to send a message to Google Sheets
         function sendMessage() {
@@ -96,21 +96,25 @@
                 fixedLabel.textContent = newMessage;
 
                 // Send the message to Google Sheets
-                const params = {
+                fetch(scriptURL, {
                     method: "POST",
-                    body: new URLSearchParams({
-                        message: newMessage
-                    })
-                };
-                
-                fetch(scriptURL, params)
-                    .then(response => response.json())
-                    .then(data => {
-                        console.log("Message saved:", data);
-                    })
-                    .catch(error => {
-                        console.error("Error saving message:", error);
-                    });
+                    headers: {
+                        "Content-Type": "application/x-www-form-urlencoded"
+                    },
+                    body: new URLSearchParams({ message: newMessage })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log("Response from server:", data);
+                    if (data.status === "success") {
+                        console.log("Message saved successfully!");
+                    } else {
+                        console.error("Error:", data.error);
+                    }
+                })
+                .catch(error => {
+                    console.error("Error sending message:", error);
+                });
 
                 // Clear the input field
                 messageInput.value = "";
@@ -124,6 +128,8 @@
                 .then(data => {
                     if (data.message) {
                         document.getElementById("fixedLabel").textContent = data.message;
+                    } else {
+                        document.getElementById("fixedLabel").textContent = "No messages yet.";
                     }
                 })
                 .catch(error => {
