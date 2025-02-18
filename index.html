@@ -73,8 +73,8 @@
     <script>
         // Firebase configuration (Replace with your actual Firebase details)
         const firebaseConfig = {
-            apiKey: "AIzaSyBeqIsK6Ge-zweIvUkxAL_UhM0VW0UIHwc",
-            authDomain: "test-7d6a1.firebaseapp.com",
+             apiKey: "AIzaSyBeqIsK6Ge-zweIvUkxAL_UhM0VW0UIHwc",
+             authDomain: "test-7d6a1.firebaseapp.com",
             databaseURL: "https://test-7d6a1-default-rtdb.firebaseio.com",
             projectId: "test-7d6a1",
             storageBucket: "test-7d6a1.firebasestorage.app",
@@ -87,7 +87,7 @@
         const database = firebase.database();
         const messagesRef = database.ref("messages");
 
-        // Load messages from Firebase
+        // Load messages from Firebase and keep the fixed ones
         messagesRef.on("value", (snapshot) => {
             const messagesContainer = document.getElementById("messages");
             messagesContainer.innerHTML = `
@@ -98,23 +98,29 @@
 
             const data = snapshot.val();
             if (data) {
-                const messageKeys = Object.keys(data);
-                const lastMessageKey = messageKeys[messageKeys.length - 1]; // Get the latest message key
-
-                // Show the latest message in the container, replacing the previous one
-                let messageElement = document.createElement("p");
-                messageElement.className = "message";
-                messageElement.textContent = data[lastMessageKey]; 
-                messagesContainer.appendChild(messageElement);
+                Object.values(data).forEach((msg) => {
+                    let messageElement = document.createElement("p");
+                    messageElement.className = "message";
+                    messageElement.textContent = msg;
+                    messagesContainer.appendChild(messageElement);
+                });
             }
         });
 
+        // Add a new message
         function addMessage() {
-            let newMessage = document.getElementById("messageInput").value;
+            const newMessage = document.getElementById("messageInput").value;
             if (newMessage.trim() !== "") {
-                const newMessageRef = messagesRef.push(); // Push a new message
-                newMessageRef.set(newMessage);
-                document.getElementById("messageInput").value = ""; // Clear input
+                // Push the new message to Firebase
+                const newMessageRef = messagesRef.push(); 
+                newMessageRef.set(newMessage)
+                    .then(() => {
+                        // Clear the input field after successful message submission
+                        document.getElementById("messageInput").value = "";
+                    })
+                    .catch((error) => {
+                        console.error("Error writing message:", error);
+                    });
             }
         }
     </script>
