@@ -97,23 +97,18 @@
 
             fetch(scriptURL, {
                 method: "POST",
-                mode: "cors", // ✅ Fixes CORS issue
+                mode: "cors", 
                 headers: {
                     "Content-Type": "application/json"
                 },
-                body: JSON.stringify({ message: newMessage }) // Send JSON data
+                body: JSON.stringify({ message: newMessage })
             })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`HTTP error! Status: ${response.status}`);
-                }
-                return response.json();
-            })
+            .then(response => response.json())
             .then(data => {
                 console.log("✅ Server Response:", data);
                 if (data.success) {
-                    fixedLabel.textContent = newMessage; // ✅ Update UI only if saved successfully
-                    messageInput.value = ""; // Clear input
+                    fixedLabel.textContent = newMessage;
+                    messageInput.value = ""; 
                 } else {
                     console.error("❌ Server Error:", data.error);
                     alert("⚠️ Error saving message!");
@@ -126,13 +121,8 @@
         }
 
         function fetchLastMessage() {
-            fetch(scriptURL, { mode: "cors" }) // ✅ Fixes CORS issue
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! Status: ${response.status}`);
-                    }
-                    return response.json();
-                })
+            fetch(scriptURL, { mode: "cors" })
+                .then(response => response.json())
                 .then(data => {
                     const fixedLabel = document.getElementById("fixedLabel");
                     if (data.success) {
