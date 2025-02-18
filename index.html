@@ -83,9 +83,9 @@
     </div>
 
     <script>
-        const BIN_ID = "67b4debcad19ca34f808b31b"; // Replace with your actual Bin ID
-        const API_KEY = "$2a$10$ISycVis5ncomRiK25bbAK.PtwnubVjM9y7TuiP4YHtORMRUcytfSK"; // Replace with your JSONBin API Key
-        const BIN_URL = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
+        const BIN_ID = "67b4debcad19ca34f808b31b"; // 🔥 Replace with your actual Bin ID
+        const API_KEY = "$2a$10$ISycVis5ncomRiK25bbAK.PtwnubVjM9y7TuiP4YHtORMRUcytfSK"; // 🔥 Replace with your X-Master-Key from JSONBin.io
+        const JSONBIN_URL = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
 
         function sendMessage() {
             const messageInput = document.getElementById("messageInput");
@@ -97,8 +97,8 @@
                 return;
             }
 
-            fetch(BIN_URL, {
-                method: "PUT",
+            fetch(JSONBIN_URL, {
+                method: "PUT", // ✅ Updates the JSONBin with new message
                 headers: {
                     "Content-Type": "application/json",
                     "X-Master-Key": API_KEY
@@ -107,19 +107,22 @@
             })
             .then(response => response.json())
             .then(data => {
-                console.log("✅ Server Response:", data);
-                fixedLabel.textContent = newMessage;
-                messageInput.value = "";
+                console.log("✅ Message saved:", data);
+                fixedLabel.textContent = newMessage; // ✅ Update UI immediately
+                messageInput.value = ""; 
             })
             .catch(error => {
                 console.error("❌ Fetch Error:", error.message || error);
-                alert("❌ Network error. Please try again.");
+                alert("❌ Error saving message!");
             });
         }
 
         function fetchLastMessage() {
-            fetch(BIN_URL, {
-                headers: { "X-Master-Key": API_KEY }
+            fetch(JSONBIN_URL + "/latest", { // ✅ Fetch the latest saved message
+                method: "GET",
+                headers: {
+                    "X-Master-Key": API_KEY
+                }
             })
             .then(response => response.json())
             .then(data => {
