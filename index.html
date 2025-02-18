@@ -85,59 +85,63 @@
     <script>
         const scriptURL = "https://script.google.com/macros/s/AKfycbz5BelFMNJhTDO6Omz6LaUFhS3IFzOMm6xbvnunCF1HAQf-KHMjqZL3T4LtjVbTAVTpPg/exec"; // Replace with your actual Google Apps Script URL
 
-        // Function to send a message to Google Sheets
         function sendMessage() {
             const messageInput = document.getElementById("messageInput");
-            const fixedLabel = document.getElementById("fixedLabel");
-            
             const newMessage = messageInput.value.trim();
-            if (newMessage !== "") {
-                // Update the label with the new message
-                fixedLabel.textContent = newMessage;
+            const fixedLabel = document.getElementById("fixedLabel");
 
-                // Send the message to Google Sheets
+            if (newMessage !== "") {
                 fetch(scriptURL, {
                     method: "POST",
                     headers: {
-                        "Content-Type": "application/x-www-form-urlencoded"
+                        "Content-Type": "application/json"
                     },
-                    body: new URLSearchParams({ message: newMessage })
+                    body: JSON.stringify({ message: newMessage }) // Send JSON data
                 })
-                .then(response => response.json())
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! Status: ${response.status}`);
+                    }
+                    return response.json();
+                })
                 .then(data => {
-                    console.log("Response from server:", data);
+                    console.log("✅ Server Response:", data);
                     if (data.status === "success") {
-                        console.log("Message saved successfully!");
+                        console.log("✅ Message saved successfully!");
+                        fixedLabel.textContent = newMessage; // Update UI
                     } else {
-                        console.error("Error:", data.error);
+                        console.error("❌ Server Error:", data.error);
                     }
                 })
                 .catch(error => {
-                    console.error("Error sending message:", error);
+                    console.error("❌ Fetch Error:", error.message || error);
                 });
 
-                // Clear the input field
-                messageInput.value = "";
+                messageInput.value = ""; // Clear input
             }
         }
 
-        // Function to fetch the last saved message from Google Sheets
         function fetchLastMessage() {
             fetch(scriptURL)
-                .then(response => response.json())
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! Status: ${response.status}`);
+                    }
+                    return response.json();
+                })
                 .then(data => {
+                    const fixedLabel = document.getElementById("fixedLabel");
                     if (data.message) {
-                        document.getElementById("fixedLabel").textContent = data.message;
+                        fixedLabel.textContent = data.message;
                     } else {
-                        document.getElementById("fixedLabel").textContent = "No messages yet.";
+                        fixedLabel.textContent = "No messages yet.";
                     }
                 })
                 .catch(error => {
-                    console.error("Error fetching last message:", error);
+                    console.error("❌ Error fetching last message:", error.message || error);
                 });
         }
 
-        // Load the last saved message when the page loads
         window.onload = fetchLastMessage;
     </script>
 </body>
