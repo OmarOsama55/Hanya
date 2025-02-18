@@ -83,46 +83,50 @@
     </div>
 
     <script>
-        const scriptURL = "https://script.google.com/macros/s/AKfycbyG6VkP2HWMLdH07kFBVLhlvQlkNUUBTNKlhWdfcNuAQ8t6Ur29ZVb2vJCzpQSGUfKM4Q/exec"; // Replace with your actual Google Apps Script URL
+        const scriptURL = "https://script.google.com/macros/s/AKfycbyG6VkP2HWMLdH07kFBVLhlvQlkNUUBTNKlhWdfcNuAQ8t6Ur29ZVb2vJCzpQSGUfKM4Q/exec"; 
 
         function sendMessage() {
             const messageInput = document.getElementById("messageInput");
             const newMessage = messageInput.value.trim();
             const fixedLabel = document.getElementById("fixedLabel");
 
-            if (newMessage !== "") {
-                fetch(scriptURL, {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({ message: newMessage }) // Send JSON data
-                })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! Status: ${response.status}`);
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    console.log("✅ Server Response:", data);
-                    if (data.status === "success") {
-                        console.log("✅ Message saved successfully!");
-                        fixedLabel.textContent = newMessage; // Update UI
-                    } else {
-                        console.error("❌ Server Error:", data.error);
-                    }
-                })
-                .catch(error => {
-                    console.error("❌ Fetch Error:", error.message || error);
-                });
-
-                messageInput.value = ""; // Clear input
+            if (newMessage === "") {
+                alert("❌ Please enter a message.");
+                return;
             }
+
+            fetch(scriptURL, {
+                method: "POST",
+                mode: "cors", // ✅ Fixes CORS issue
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ message: newMessage }) // Send JSON data
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log("✅ Server Response:", data);
+                if (data.success) {
+                    fixedLabel.textContent = newMessage; // ✅ Update UI only if saved successfully
+                    messageInput.value = ""; // Clear input
+                } else {
+                    console.error("❌ Server Error:", data.error);
+                    alert("⚠️ Error saving message!");
+                }
+            })
+            .catch(error => {
+                console.error("❌ Fetch Error:", error.message || error);
+                alert("❌ Network error. Please try again.");
+            });
         }
 
         function fetchLastMessage() {
-            fetch(scriptURL)
+            fetch(scriptURL, { mode: "cors" }) // ✅ Fixes CORS issue
                 .then(response => {
                     if (!response.ok) {
                         throw new Error(`HTTP error! Status: ${response.status}`);
@@ -131,7 +135,7 @@
                 })
                 .then(data => {
                     const fixedLabel = document.getElementById("fixedLabel");
-                    if (data.message) {
+                    if (data.success) {
                         fixedLabel.textContent = data.message;
                     } else {
                         fixedLabel.textContent = "No messages yet.";
