@@ -57,4 +57,42 @@
             margin-top: 20px;
             font-size: 20px;
             background-color: white;
-            padding: 
+            padding: 10px;
+            border-radius: 10px;
+            width: 80%;
+            max-width: 400px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <h1>Hanona ❤️</h1>
+    <div class="heart">💖</div>
+
+    <div class="message-container" id="messages">
+        <p class="message">3mltlk website 3shan 22olk eny b7bk 💕</p>
+        <p class="message">Hanona ahla bent fel donya w cute lma btt3sb 💖</p>
+        <p class="message">isa 3gbk ba2a 3shan application tl3 s3b delwa2ty 😂</p>
+    </div>
+
+    <input type="text" id="messageInput" placeholder="Write your message here">
+    <button onclick="updateLabel()">Send</button>
+
+    <div id="fixedLabel" class="message">
+        <!-- This label will be updated with the new message -->
+    </div>
+
+    <script>
+        function updateLabel() {
+            const messageInput = document.getElementById("messageInput");
+            const fixedLabel = document.getElementById("fixedLabel");
+            
+            const newMessage = messageInput.value.trim();
+            if (newMessage !== "") {
+                fixedLabel.textContent = newMessage;  // Update the label with the new message
+                messageInput.value = ""; // Clear the input field after updating the label
+            }
+        }
+    </script>
+</body>
+</html>
