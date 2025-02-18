@@ -76,21 +76,42 @@
     </div>
 
     <input type="text" id="messageInput" placeholder="Write your message here">
-    <button onclick="updateLabel()">Send</button>
+    <button onclick="sendMessage()">Send</button>
 
     <div id="fixedLabel" class="message">
         <!-- This label will be updated with the new message -->
     </div>
 
     <script>
-        function updateLabel() {
+        function sendMessage() {
             const messageInput = document.getElementById("messageInput");
             const fixedLabel = document.getElementById("fixedLabel");
             
             const newMessage = messageInput.value.trim();
             if (newMessage !== "") {
-                fixedLabel.textContent = newMessage;  // Update the label with the new message
-                messageInput.value = ""; // Clear the input field after updating the label
+                // Update the label with the new message
+                fixedLabel.textContent = newMessage;
+
+                // Send the message to Google Sheets using the Apps Script API
+                const url = "https://script.google.com/macros/s/AKfycbwMoTWIMpsXvfzY50qEAlHBpq45mjI8ZL6aBGhQfVK08uNxzU1b8eaQs0Zj816F_tLwKQ/exec"; // Replace with your Google Script URL
+                const params = {
+                    method: "POST",
+                    body: new URLSearchParams({
+                        message: newMessage
+                    })
+                };
+                
+                fetch(url, params)
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log("Message saved:", data);
+                    })
+                    .catch(error => {
+                        console.error("Error saving message:", error);
+                    });
+
+                // Clear the input field
+                messageInput.value = "";
             }
         }
     </script>
