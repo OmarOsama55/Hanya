@@ -66,63 +66,27 @@
     </div>
 
     <input type="text" id="messageInput" placeholder="Write your message here">
-    <button onclick="addMessage()">Send</button>
+    <button onclick="updateMessage()">Send</button>
 
-    <!-- Firebase scripts -->
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js"></script>
+    <div id="messageLabel"></div>
 
     <script>
-        // Firebase configuration (Replace with your actual Firebase details)
-        const firebaseConfig = {
-          apiKey: "AIzaSyBeqIsK6Ge-zweIvUkxAL_UhM0VW0UIHwc",
-          authDomain: "test-7d6a1.firebaseapp.com",
-          databaseURL: "https://test-7d6a1-default-rtdb.firebaseio.com",
-          projectId: "test-7d6a1",
-          storageBucket: "test-7d6a1.firebasestorage.app",
-          messagingSenderId: "585276421372",
-          appId: "1:585276421372:web:28fd6fc7e2120d2ebb1379"
-        };
-        // Initialize Firebase
-        const app = firebase.initializeApp(firebaseConfig);
-        console.log(firebase); // Check if Firebase is loaded correctly
-        const database = firebase.database();
-        const messagesRef = database.ref("messages");
-
-        // Load messages from Firebase and keep the fixed ones
-        messagesRef.on("value", (snapshot) => {
+        function updateMessage() {
+            const messageInput = document.getElementById("messageInput");
             const messagesContainer = document.getElementById("messages");
-            messagesContainer.innerHTML = `
-                <p class="message">3mltlk website 3shan 22olk eny b7bk 💕</p>
-                <p class="message">Hanona ahla bent fel donya w cute lma btt3sb 💖</p>
-                <p class="message">isa 3gbk ba2a 3shan application tl3 s3b delwa2ty 😂</p>
-            `; // Keep the original messages
+            
+            const newMessage = messageInput.value.trim();
+            if (newMessage !== "") {
+                // Create a new message element and style it like other messages
+                const newMessageElement = document.createElement("p");
+                newMessageElement.className = "message";
+                newMessageElement.textContent = newMessage;
 
-            const data = snapshot.val();
-            if (data) {
-                Object.values(data).forEach((msg) => {
-                    let messageElement = document.createElement("p");
-                    messageElement.className = "message";
-                    messageElement.textContent = msg;
-                    messagesContainer.appendChild(messageElement);
-                });
-            }
-        });
+                // Append it to the messages container
+                messagesContainer.appendChild(newMessageElement);
 
-        // Add a new message
-        function addMessage() {
-            const newMessage = document.getElementById("messageInput").value;
-            if (newMessage.trim() !== "") {
-                // Push the new message to Firebase
-                const newMessageRef = messagesRef.push(); 
-                newMessageRef.set(newMessage)
-                    .then(() => {
-                        // Clear the input field after successful message submission
-                        document.getElementById("messageInput").value = "";
-                    })
-                    .catch((error) => {
-                        console.error("Error writing message:", error);
-                    });
+                // Clear the input field after submitting
+                messageInput.value = "";
             }
         }
     </script>
