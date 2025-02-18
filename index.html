@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title> Hanya 😍❤️</title>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js"></script>
     <style>
         body {
             text-align: center;
@@ -24,17 +26,97 @@
             from { transform: scale(1); }
             to { transform: scale(1.2); }
         }
-        .message {
-            font-size: 20px;
+        .message-container {
             margin-top: 20px;
+            font-size: 20px;
+        }
+        .message {
+            background: white;
+            padding: 10px;
+            border-radius: 10px;
+            margin: 10px auto;
+            width: 80%;
+            max-width: 400px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+        input {
+            padding: 10px;
+            font-size: 16px;
+            width: 80%;
+            max-width: 300px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            margin-top: 10px;
+            background-color: #ff4d4d;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
         }
     </style>
 </head>
 <body>
     <h1>Hanona ❤️</h1>
     <div class="heart">💖</div>
-     <p class="message">3mltlk website 3shan 22olk eny b7bk 💕 </p>
-    <p class="message"> Hanona ahla bent fel donya w cute lma btt3sb 💖</p>
-    <p class="message">isa 3gbk ba2a 3shan application tl3 s3b delwa2ty 😂</p>
+
+    <div class="message-container" id="messages">
+        <p class="message">3mltlk website 3shan 22olk eny b7bk 💕</p>
+        <p class="message">Hanona ahla bent fel donya w cute lma btt3sb 💖</p>
+        <p class="message">isa 3gbk ba2a 3shan application tl3 s3b delwa2ty 😂</p>
+    </div>
+
+    <input type="text" id="messageInput" placeholder="Write your message here">
+    <button onclick="addMessage()">Send</button>
+
+    <script>
+        // Firebase configuration (Replace with your actual Firebase details)
+        const firebaseConfig = {
+            apiKey: "AIzaSyBeqIsK6Ge-zweIvUkxAL_UhM0VW0UIHwc",
+            authDomain: "test-7d6a1.firebaseapp.com",
+            databaseURL: "https://test-7d6a1-default-rtdb.firebaseio.com",
+            projectId: "test-7d6a1",
+            storageBucket: "test-7d6a1.firebasestorage.app",
+            messagingSenderId: "585276421372",
+            appId: "1:585276421372:web:28fd6fc7e2120d2ebb1379"
+        };
+
+        // Initialize Firebase
+        const app = firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+        const messagesRef = database.ref("messages");
+
+        // Load messages from Firebase
+        messagesRef.on("value", (snapshot) => {
+            const messagesContainer = document.getElementById("messages");
+            messagesContainer.innerHTML = `
+                <p class="message">3mltlk website 3shan 22olk eny b7bk 💕</p>
+                <p class="message">Hanona ahla bent fel donya w cute lma btt3sb 💖</p>
+                <p class="message">isa 3gbk ba2a 3shan application tl3 s3b delwa2ty 😂</p>
+            `; // Keep the original messages
+
+            const data = snapshot.val();
+            if (data) {
+                const messageKeys = Object.keys(data);
+                const lastMessageKey = messageKeys[messageKeys.length - 1]; // Get the latest message key
+
+                // Show the latest message in the container, replacing the previous one
+                let messageElement = document.createElement("p");
+                messageElement.className = "message";
+                messageElement.textContent = data[lastMessageKey]; 
+                messagesContainer.appendChild(messageElement);
+            }
+        });
+
+        function addMessage() {
+            let newMessage = document.getElementById("messageInput").value;
+            if (newMessage.trim() !== "") {
+                const newMessageRef = messagesRef.push(); // Push a new message
+                newMessageRef.set(newMessage);
+                document.getElementById("messageInput").value = ""; // Clear input
+            }
+        }
+    </script>
 </body>
 </html>
